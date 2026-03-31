@@ -1,0 +1,37 @@
+backend:
+  name: github
+  repo: harry-r3/sveltia-astro-poc
+  branch: main
+
+# Media files stored in public/images
+media_folder: public/images
+public_folder: /images
+
+collections:
+  - name: products
+    label: Products
+    label_singular: Product
+    folder: src/content/products
+    create: true
+    slug: "{{slug}}"
+    extension: md
+    format: frontmatter
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Tagline, name: tagline, widget: string }
+      - { label: Description, name: description, widget: text }
+      - { label: Price, name: price, widget: number, value_type: float }
+      - { label: Currency, name: currency, widget: string, default: "USD" }
+      - { label: Image, name: image, widget: image }
+      - label: Features
+        name: features
+        widget: list
+        fields:
+          - { label: Title, name: title, widget: string }
+          - { label: Description, name: description, widget: text }
+          - { label: Icon (emoji), name: icon, widget: string }
+      - { label: CTA Text, name: cta_text, widget: string, default: "Get Started" }
+      - { label: CTA URL, name: cta_url, widget: string, default: "#" }
+      - { label: Published, name: published, widget: boolean, default: true }
+      - { label: Date, name: date, widget: datetime }
+      - { label: Body, name: body, widget: markdown }

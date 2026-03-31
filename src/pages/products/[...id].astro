@@ -1,0 +1,55 @@
+---
+import Base from "../../layouts/Base.astro";
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const products = await getCollection("products");
+  return products.map((product) => ({
+    params: { id: product.id },
+    props: { product },
+  }));
+}
+
+const { product } = Astro.props;
+const { Content } = await render(product);
+
+function formatPrice(price: number, currency: string) {
+  return new Intl.NumberFormat("en-US", { style: "currency", currency }).format(
+    price,
+  );
+}
+---
+
+<Base title={`${product.data.title} — Acme Store`} description={product.data.description}>
+  <div class="container">
+    <section class="product-hero">
+      <div class="hero-image">
+        <img src={product.data.image} alt={product.data.title} />
+      </div>
+      <div>
+        <h1>{product.data.title}</h1>
+        <p class="tagline">{product.data.tagline}</p>
+        <p class="description">{product.data.description}</p>
+        <p class="price">{formatPrice(product.data.price, product.data.currency)}</p>
+        <a href={product.data.cta_url} class="btn-primary">{product.data.cta_text}</a>
+      </div>
+    </section>
+
+    <section class="features">
+      <h2>Key Features</h2>
+      <div class="features-grid">
+        {product.data.features.map((f) => (
+          <div class="feature-card">
+            <div class="icon">{f.icon}</div>
+            <h3>{f.title}</h3>
+            <p>{f.description}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <article class="product-body">
+      <Content />
+    </article>
+  </div>
+</Base>

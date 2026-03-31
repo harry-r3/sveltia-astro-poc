@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Content Manager — Acme Store</title>
+    <style>
+      .cms-loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        font-family: system-ui, sans-serif;
+        color: #64748b;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="cms-loading" id="loading">Loading CMS&hellip;</div>
+    <script>
+      /**
+       * Sveltia CMS loader — CDN-first with self-hosted fallback.
+       *
+       * 1. Tries the unpkg CDN (latest stable).
+       * 2. If the CDN fails (timeout, network error, blocked), falls back to
+       *    the self-hosted bundle built from npm during CI.
+       */
+      (function () {
+        var CDN_URL =
+          "https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js";
+        var FALLBACK_URL = "/admin/sveltia-cms.js";
+        var TIMEOUT_MS = 8000;
+
+        function loadScript(src) {
+          return new Promise(function (resolve, reject) {
+            var s = document.createElement("script");
+            s.src = src;
+            s.onload = resolve;
+            s.onerror = reject;
+            document.body.appendChild(s);
+          });
+        }
+
+        function hideLoading() {
+          var el = document.getElementById("loading");
+          if (el) el.style.display = "none";
+        }
+
+        // Race: CDN load vs timeout
+        var cdn = loadScript(CDN_URL);
+        var timeout = new Promise(function (_, reject) {
+          setTimeout(function () {
+            reject(new Error("CDN timeout"));
+          }, TIMEOUT_MS);
+        });
+
+        Promise.race([cdn, timeout])
+          .then(function () {
+            console.log("[CMS] Loaded from CDN");
+            hideLoading();
+          })
+          .catch(function (err) {
+            console.warn("[CMS] CDN failed (" + err.message + "), trying self-hosted fallback…");
+            loadScript(FALLBACK_URL)
+              .then(function () {
+                console.log("[CMS] Loaded from self-hosted fallback");
+                hideLoading();
+              })
+              .catch(function () {
+                document.getElementById("loading").textContent =
+                  "Failed to load the CMS. Please try again later.";
+                console.error("[CMS] Both CDN and self-hosted fallback failed");
+              });
+          });
+      })();
+    </script>
+  </body>
+</html>

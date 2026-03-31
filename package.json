@@ -1,0 +1,25 @@
+{
+  "name": "sveltia-astro-poc",
+  "version": "1.0.0",
+  "description": "Sveltia CMS + Astro proof of concept on Cloudflare Pages",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "node scripts/bundle-sveltia.mjs && astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://local_proxy@127.0.0.1:44103/git/harry-r3/sveltia-astro-poc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "astro": "^6.1.2"
+  },
+  "devDependencies": {
+    "@sveltia/cms": "^0.151.4"
+  }
+}

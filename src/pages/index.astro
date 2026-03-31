@@ -1,0 +1,52 @@
+---
+import Base from "../layouts/Base.astro";
+import { getCollection } from "astro:content";
+
+const products = (await getCollection("products"))
+  .filter((p) => p.data.published)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+function formatPrice(price: number, currency: string) {
+  return new Intl.NumberFormat("en-US", { style: "currency", currency }).format(
+    price,
+  );
+}
+---
+
+<Base title="Acme Store — Products">
+  <section class="hero">
+    <div class="container">
+      <h1>Premium Products,<br />Thoughtfully Designed</h1>
+      <p>
+        Explore our curated collection of products built for people who care
+        about quality, performance, and sustainability.
+      </p>
+    </div>
+  </section>
+
+  <section class="container">
+    <div class="product-grid">
+      {
+        products.map((product) => (
+          <a
+            href={`/products/${product.id}/`}
+            class="product-card"
+            style="text-decoration:none;color:inherit"
+          >
+            <div class="card-image">
+              <img src={product.data.image} alt={product.data.title} />
+            </div>
+            <div class="card-body">
+              <h2>{product.data.title}</h2>
+              <p class="tagline">{product.data.tagline}</p>
+              <p class="price">
+                {formatPrice(product.data.price, product.data.currency)}
+              </p>
+              <span class="btn-primary">{product.data.cta_text}</span>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+</Base>

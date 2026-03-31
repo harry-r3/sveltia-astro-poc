@@ -2,6 +2,9 @@ backend:
   name: github
   repo: harry-r3/sveltia-astro-poc
   branch: main
+  # Point to your sveltia-cms-auth Cloudflare Worker for OAuth
+  # Deploy from: https://github.com/sveltia/sveltia-cms-auth
+  base_url: https://sveltia-cms-auth.YOUR_SUBDOMAIN.workers.dev
 
 # Media files stored in public/images
 media_folder: public/images
